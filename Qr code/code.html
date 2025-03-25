@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Tree Encyclopedia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a7c59;
+            --secondary: #f8f3e6;
+            --accent: #e6a756;
+            --dark: #3a3a3a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            background-color: var(--secondary);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #3a5a40, #588157);
+            color: white;
+            text-align: center;
+            padding: 3rem 0 4rem;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            margin-bottom: 2rem;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        #search {
+            width: 100%;
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: none;
+            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        #search:focus {
+            outline: none;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transform: translateY(-2px);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.3rem;
+        }
+        
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 800px;
+        }
+        
+        .category-btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tree-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .tree-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .tree-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .tree-img-container {
+            height: 200px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .tree-img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .tree-card:hover .tree-img {
+            transform: scale(1.1);
+        }
+        
+        .tree-color-bar {
+            height: 5px;
+            width: 100%;
+        }
+        
+        .tree-info {
+            padding: 1.5rem;
+        }
+        
+        .tree-name {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .scientific-name {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .tree-desc {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature {
+            background: #f0f7f4;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+        
+        .view-btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+        }
+        
+        .view-btn:hover {
+            background: transparent;
+            color: var(--primary);
+        }
+        
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 3rem;
+            margin-top: 3rem;
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Animated background elements */
+        .leaf {
+            position: absolute;
+            opacity: 0.15;
+            z-index: 1;
+            color: white;
+        }
+        
+        .leaf-1 {
+            top: 20px;
+            left: 5%;
+            font-size: 3rem;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .leaf-2 {
+            bottom: 10%;
+            right: 8%;
+            font-size: 4rem;
+            animation: float 10s ease-in-out infinite 2s;
+        }
+        
+        .leaf-3 {
+            top: 30%;
+            right: 15%;
+            font-size: 2.5rem;
+            animation: float 7s ease-in-out infinite 1s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(10deg);
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tagline {
+                font-size: 1.1rem;
+            }
+            
+            .tree-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+            
+            .tree-info {
+                padding: 1.2rem;
+            }
+            
+            header {
+                padding: 2rem 0 3rem;
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+            }
+        }
+        
+        /* Animation for cards */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .tree-card {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .tree-card:nth-child(1) { animation-delay: 0.1s; }
+        .tree-card:nth-child(2) { animation-delay: 0.2s; }
+        .tree-card:nth-child(3) { animation-delay: 0.3s; }
+        .tree-card:nth-child(4) { animation-delay: 0.4s; }
+        .tree-card:nth-child(5) { animation-delay: 0.5s; }
+        .tree-card:nth-child(6) { animation-delay: 0.6s; }
+        .tree-card:nth-child(7) { animation-delay: 0.7s; }
+        .tree-card:nth-child(8) { animation-delay: 0.8s; }
+        .tree-card:nth-child(9) { animation-delay: 0.9s; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <i class="fas fa-leaf leaf leaf-1"></i>
+            <i class="fab fa-pagelines leaf leaf-2"></i>
+            <i class="fas fa-seedling leaf leaf-3"></i>
+            <h1>Tree Encyclopedia</h1>
+            <p class="tagline">Discover the Fascinating World of Trees</p>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search for trees...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="categories">
+        <button class="category-btn active">All</button>
+        <button class="category-btn">Flowering</button>
+        <button class="category-btn">Fruit</button>
+        <button class="category-btn">Medicinal</button>
+        <button class="category-btn">Ornamental</button>
+        <button class="category-btn">Native</button>
+    </div>
+    
+    <main>
+        <div class="tree-grid">
+            <!-- African Tulip -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="africantulip0.jpg" alt="African Tulip Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: darkorange;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-fire"></i> African Tulip</h2>
+                    <p class="scientific-name">Spathodea campanulata</p>
+                    <p class="tree-desc">Known for its spectacular orange-red flowers that resemble flames. Native to tropical Africa, widely cultivated for ornamental beauty.</p>
+                    <div class="features">
+                        <span class="feature">Ornamental</span>
+                        <span class="feature">Fast-growing</span>
+                        <span class="feature">Medicinal</span>
+                    </div>
+                    <a href="african-tulip.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Araucaria -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="aur1.png" alt="Araucaria Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #2E8B57;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-tree"></i> Araucaria</h2>
+                    <p class="scientific-name">Araucaria spp.</p>
+                    <p class="tree-desc">Ancient coniferous tree with symmetrical triangular shape, often called "nature's Christmas tree." Some species date back to the Jurassic period.</p>
+                    <div class="features">
+                        <span class="feature">Evergreen</span>
+                        <span class="feature">Ancient</span>
+                        <span class="feature">Ornamental</span>
+                    </div>
+                    <a href="araucaria.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Areca Nut -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="areca1.png" alt="Areca Nut Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #8B4513;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-pagelines"></i> Areca Nut</h2>
+                    <p class="scientific-name">Areca catechu</p>
+                    <p class="tree-desc">Slender palm cultivated for its valuable nuts, important in cultural traditions across tropical Asia. Used in religious ceremonies.</p>
+                    <div class="features">
+                        <span class="feature">Cultural</span>
+                        <span class="feature">Economic</span>
+                        <span class="feature">Medicinal</span>
+                    </div>
+                    <a href="areca-nut.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Bauhinia Purpurea -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="bp1.png" alt="Bauhinia Purpurea" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #9c64a5;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-spa"></i> Bauhinia Purpurea</h2>
+                    <p class="scientific-name">Bauhinia purpurea</p>
+                    <p class="tree-desc">Stunning flowering tree with butterfly-shaped leaves and vibrant purple-pink blossoms. Fast-growing ornamental tree.</p>
+                    <div class="features">
+                        <span class="feature">Flowering</span>
+                        <span class="feature">Ornamental</span>
+                        <span class="feature">Medicinal</span>
+                    </div>
+                    <a href="bauhinia.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Neem -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="neem1.png" alt="Neem Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #6B8E23;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-leaf"></i> Neem</h2>
+                    <p class="scientific-name">Azadirachta indica</p>
+                    <p class="tree-desc">Revered as "Nature's Pharmacy," every part of this tree has medicinal value in Ayurveda. Essential in Indian traditions.</p>
+                    <div class="features">
+                        <span class="feature">Medicinal</span>
+                        <span class="feature">Sacred</span>
+                        <span class="feature">Drought-resistant</span>
+                    </div>
+                    <a href="neem.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Ponytail Palm -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="pony1.png" alt="Ponytail Palm" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #8F9779;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-fan"></i> Ponytail Palm</h2>
+                    <p class="scientific-name">Beaucarnea recurvata</p>
+                    <p class="tree-desc">Whimsical succulent with a swollen water-storing trunk and fountain of ribbon-like leaves. Popular houseplant.</p>
+                    <div class="features">
+                        <span class="feature">Succulent</span>
+                        <span class="feature">Drought-tolerant</span>
+                        <span class="feature">Ornamental</span>
+                    </div>
+                    <a href="ponytail-palm.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Singapore Cherry -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="sing1.png" alt="Singapore Cherry" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #D85A7F;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-cherries"></i> Singapore Cherry</h2>
+                    <p class="scientific-name">Muntingia calabura</p>
+                    <p class="tree-desc">Delightful tropical tree producing sweet, cotton candy-like fruits year-round. Attracts numerous bird species.</p>
+                    <div class="features">
+                        <span class="feature">Fruit-bearing</span>
+                        <span class="feature">Ornamental</span>
+                        <span class="feature">Wildlife</span>
+                    </div>
+                    <a href="singapore-cherry.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Tamarind -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="tam1.png" alt="Tamarind Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #8B4513;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-tree"></i> Tamarind</h2>
+                    <p class="scientific-name">Tamarindus indica</p>
+                    <p class="tree-desc">Majestic tropical tree deeply rooted in Indian culture. Provides shade, nutrition, and medicine - a true botanical treasure.</p>
+                    <div class="features">
+                        <span class="feature">Medicinal</span>
+                        <span class="feature">Fruit-bearing</span>
+                        <span class="feature">Cultural</span>
+                    </div>
+                    <a href="tamarind.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+            
+            <!-- Mango -->
+            <div class="tree-card">
+                <div class="tree-img-container">
+                    <img src="mangotree.png" alt="Mango Tree" class="tree-img">
+                </div>
+                <div class="tree-color-bar" style="background: #FF9800;"></div>
+                <div class="tree-info">
+                    <h2 class="tree-name"><i class="fas fa-apple-alt"></i> Mango</h2>
+                    <p class="scientific-name">Mangifera indica</p>
+                    <p class="tree-desc">The "King of Fruits" in India, providing shade, medicine, and cultural inspiration with over 1,000 varieties cultivated.</p>
+                    <div class="features">
+                        <span class="feature">Fruit</span>
+                        <span class="feature">Sacred</span>
+                        <span class="feature">Medicinal</span>
+                    </div>
+                    <a href="mango.html" class="view-btn">Explore</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <h3>Explore the World of Trees</h3>
+            <p>Learn about different tree species, their characteristics, and their importance to our ecosystem.</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+            <p class="copyright">© 2023 Tree Encyclopedia | Bhoj Reddy Engineering College for Women - CSE Department</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Simple search functionality
+        document.getElementById('search').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.tree-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.tree-name').textContent.toLowerCase();
+                const sciName = card.querySelector('.scientific-name').textContent.toLowerCase();
+                const desc = card.querySelector('.tree-desc').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || sciName.includes(searchTerm) || desc.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Make entire card clickable
+        document.querySelectorAll('.tree-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // Don't navigate if the click was on the button itself
+                if (e.target.classList.contains('view-btn') || e.target.closest('.view-btn')) {
+                    return;
+                }
+                const link = this.querySelector('a.view-btn');
+                if (link) {
+                    window.location.href = link.getAttribute('href');
+                }
+            });
+        });
+        
+        // Category filtering (basic implementation)
+        const categoryBtns = document.querySelectorAll('.category-btn');
+        categoryBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                categoryBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // In a complete implementation, you would filter trees by category
+                // This is just a placeholder for the UI
+            });
+        });
+    </script>
+</body>
+</html>
